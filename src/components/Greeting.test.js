@@ -1,0 +1,44 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Greeting from "./Greeting";
+
+describe("Greeting component", () => {
+  test("renders Hello World as a text", () => {
+    //Arrange
+    render(<Greeting />);
+
+    //Act
+    //...nothing
+
+    //Assert
+    const helloWorldElement = screen.getByText("Hello World", { exact: false });
+    expect(helloWorldElement).toBeInTheDocument();
+  });
+
+  test("renders 'good to see ya' if button was NOT clicked", () => {
+    render(<Greeting />);
+    const outputElement = screen.getByText(/its good to see ya/i);
+    expect(outputElement).toBeInTheDocument();
+  });
+
+  test("renders 'Changed!' if button was clicked", () => {
+    //Arrange
+    render(<Greeting />);
+    //Act
+    const buttonElement = screen.getByRole("button");
+    userEvent.click(buttonElement);
+    //Assert
+    const outputElement = screen.getByText(/Changed/);
+    expect(outputElement).toBeInTheDocument();
+  });
+
+  test("does not render 'good to see ya' after button click", () => {
+    render(<Greeting />);
+    const buttonElement = screen.getByRole("button");
+    userEvent.click(buttonElement);
+    const outputElement = screen.queryByText("good to see ya", {
+      exact: false,
+    });
+    expect(outputElement).toBeNull();
+  });
+});
